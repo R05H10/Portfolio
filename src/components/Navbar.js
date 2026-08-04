@@ -4,47 +4,84 @@ import './Navbar.css';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [activeItem, setActiveItem] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 50;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
+      setScrolled(window.scrollY > 30);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);  const menuItems = [
-    { title: 'Home', href: '#home' },
-    { title: 'About', href: '#about' },
-    { title: 'Education', href: '#education' },
-    { title: 'Skills', href: '#skills' },
-    { title: 'Projects', href: '#projects' }
+  }, []);
+
+  const menuItems = [
+    { title: 'Home', href: 'home' },
+    { title: 'About', href: 'about' },
+    { title: 'Education', href: 'education' },
+    { title: 'Skills', href: 'skills' },
+    { title: 'Projects', href: 'projects' },
+    { title: 'Contact', href: 'contact' }
   ];
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>      <div className="nav-items" style={{ width: '100%', justifyContent: 'center' }}>
-        {menuItems.map((item, index) => (          <Link
-            key={index}
-            to={item.href.replace('#', '')}
-            spy={true}
+    <header className={`navbar-header ${scrolled ? 'scrolled' : ''}`}>
+      <div className="navbar-container">
+        <Link to="home" smooth={true} duration={500} className="navbar-brand">
+          <span className="brand-badge">RS</span>
+          <span className="brand-name">Roshan <span className="brand-accent">Subhash</span></span>
+        </Link>
+
+        <nav className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          {menuItems.map((item, index) => (
+            <Link
+              key={index}
+              to={item.href}
+              spy={true}
+              smooth={true}
+              duration={500}
+              offset={-80}
+              activeClass="active"
+              className="nav-link"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {item.title}
+            </Link>
+          ))}
+          <Link
+            to="contact"
             smooth={true}
             duration={500}
-            offset={-70}
-            className={`nav-item ${activeItem === index ? 'active' : ''}`}
-            onMouseEnter={() => setActiveItem(index)}
-            onMouseLeave={() => setActiveItem(null)}
-            activeClass="active"
+            offset={-80}
+            className="nav-cta-btn mobile-cta"
+            onClick={() => setMobileMenuOpen(false)}
           >
-            {item.title}
-            <span className="nav-item-background"></span>
+            Hire Me
           </Link>
-        ))}
+        </nav>
+
+        <div className="navbar-actions">
+          <Link
+            to="contact"
+            smooth={true}
+            duration={500}
+            offset={-80}
+            className="nav-cta-btn desktop-cta"
+          >
+            Hire Me
+          </Link>
+
+          <button
+            className={`mobile-toggle ${mobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+          >
+            <span className="bar"></span>
+            <span className="bar"></span>
+            <span className="bar"></span>
+          </button>
+        </div>
       </div>
-      <div className="nav-indicator"></div>
-    </nav>
+    </header>
   );
 };
 
